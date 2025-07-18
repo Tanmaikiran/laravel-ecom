@@ -59,3 +59,20 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Open port 8000 in browser
+
+Visit / for homepage and /cart for cart
+
+On Local System
+Clone the repository
+
+Run composer install
+
+Run php artisan serve
+
+Visit http://localhost:8000
+
+Submitted By
+Tanmai Kiran
+B.Tech Computer Science
+Laravel Developer Internship Candidate
