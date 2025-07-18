@@ -1,7 +1,7 @@
-# Use the official PHP image with required extensions
+# Use the official PHP image
 FROM php:8.2-fpm
 
-# Install system dependencies
+# Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -19,16 +19,20 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy application files
+# Copy application source code
 COPY . .
 
-# Copy .env.example to .env, install dependencies, and generate app key
-RUN cp .env.example .env && \
-    composer install && \
-    php artisan key:generate
+# 👇 Fix: Ensure .env is created before key generation
+RUN cp .env.example .env
+
+# Install PHP dependencies
+RUN composer install
+
+# Generate Laravel app key
+RUN php artisan key:generate
 
 # Expose port 80
 EXPOSE 80
 
-# Run Laravel server
+# Start Laravel development server
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]
