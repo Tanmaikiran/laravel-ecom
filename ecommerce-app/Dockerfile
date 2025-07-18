@@ -1,7 +1,7 @@
 # Use official PHP base image
 FROM php:8.2-fpm
 
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git curl zip unzip libzip-dev libpng-dev libonig-dev libxml2-dev \
     && docker-php-ext-install pdo_mysql mbstring zip exif pcntl
@@ -12,20 +12,20 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy project files (including .env.example)
+# Copy all Laravel files
 COPY . .
 
-# 👇 Prepare .env BEFORE key:generate
-RUN cp .env.example .env
+# ✅ Manually create a .env file to bypass copy issue
+RUN echo "APP_NAME=Laravel\nAPP_ENV=local\nAPP_KEY=\nAPP_DEBUG=true\nAPP_URL=http://localhost" > .env
 
-# Install PHP dependencies
+# Install Laravel dependencies
 RUN composer install
 
-# Generate Laravel app key
+# Generate Laravel application key
 RUN php artisan key:generate
 
-# Expose Laravel port
+# Expose port for Laravel
 EXPOSE 80
 
-# Start Laravel server
+# Run Laravel server
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]
